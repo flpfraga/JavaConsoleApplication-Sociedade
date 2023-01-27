@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.fraga.bdmg.application.Controller;
-import com.fraga.bdmg.model.BemImovel;
+import com.fraga.bdmg.data.model.BemImovel;
 import com.fraga.bdmg.populate.BemImovelPopulate;
 import com.fraga.bdmg.populate.PessoaFisicaPopulate;
 import com.fraga.bdmg.populate.PessoaJuridicaPopulate;

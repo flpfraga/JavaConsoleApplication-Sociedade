@@ -10,7 +10,7 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 
 import com.fraga.bdmg.application.ViewInput;
-import com.fraga.bdmg.model.BemImovel;
+import com.fraga.bdmg.data.model.BemImovel;
 
 public class BemImovelViewInput implements ViewInput<BemImovel>{
 

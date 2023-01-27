@@ -1,13 +1,14 @@
 package com.fraga.bdmg.application;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 
-import com.fraga.bdmg.model.BemImovel;
-import com.fraga.bdmg.model.PessoaFisica;
-import com.fraga.bdmg.model.PessoaJuridica;
+import com.fraga.bdmg.data.model.BemImovel;
+import com.fraga.bdmg.data.model.PessoaFisica;
+import com.fraga.bdmg.data.model.PessoaJuridica;
 import com.fraga.bdmg.view.BemImovelViewInput;
 import com.fraga.bdmg.view.PessoaFisicaViewInput;
 import com.fraga.bdmg.view.PessoaJuridicaViewInput;
@@ -30,6 +31,6 @@ public interface ViewInput<D> extends View<D>{
 	
 	void erroValidacao(Set<ConstraintViolation<D>> violations);
 	
-	
+	Long selecionar(List<D> lista);
 	
 }

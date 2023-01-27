@@ -8,6 +8,7 @@ public class MainView {
 			System.out.println("1 - Menu Pessoa Fisica");
 			System.out.println("2 - Menu Empresas");
 			System.out.println("0 - Sair");
+			System.out.println("Para calculo do comprometimento financeiro, acesso Menu Empresa e depois opcao 5");
 			System.out.println();
 	}
 

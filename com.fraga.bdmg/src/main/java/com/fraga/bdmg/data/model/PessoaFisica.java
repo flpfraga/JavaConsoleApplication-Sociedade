@@ -1,4 +1,4 @@
-package com.fraga.bdmg.model;
+package com.fraga.bdmg.data.model;
 
 import java.util.List;
 

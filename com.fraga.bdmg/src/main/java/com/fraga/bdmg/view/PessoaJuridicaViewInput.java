@@ -8,8 +8,8 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 
 import com.fraga.bdmg.application.ViewInput;
-import com.fraga.bdmg.model.PessoaFisica;
-import com.fraga.bdmg.model.PessoaJuridica;
+import com.fraga.bdmg.data.model.PessoaFisica;
+import com.fraga.bdmg.data.model.PessoaJuridica;
 
 public class PessoaJuridicaViewInput implements ViewInput<PessoaJuridica> {
 
@@ -44,6 +44,7 @@ public class PessoaJuridicaViewInput implements ViewInput<PessoaJuridica> {
 		} else {
 			nova.setCnpj(pessoaJuridica.getCnpj());
 		}
+		nova.setId(pessoaJuridica.getId());
 		return nova;
 	}
 

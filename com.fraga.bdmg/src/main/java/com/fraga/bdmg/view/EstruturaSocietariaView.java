@@ -8,16 +8,11 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 
 import com.fraga.bdmg.application.View;
-import com.fraga.bdmg.model.Pessoa;
+import com.fraga.bdmg.data.model.Pessoa;
 
 public class EstruturaSocietariaView implements View<Pessoa>{
 
-	public Long selecionar(List<Pessoa> lista) {
-		lista.forEach(p -> p.print());
-		Scanner ler = new Scanner(System.in);
-		System.out.println("Digite o ID da pessoa ou empresa ");
-		return ler.nextLong();
-	}
+	
 	
 	public void ioExceptionMsg(String msg) {
 		System.out.println(msg);
@@ -42,7 +37,6 @@ public class EstruturaSocietariaView implements View<Pessoa>{
 
 	@Override
 	public void listarTodos(List<Pessoa> lista) {
-		System.out.println("Lista de socios.");
 		lista.forEach(p -> p.print());
 	}
 

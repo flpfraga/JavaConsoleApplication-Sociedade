@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fraga.bdmg.application.ViewInput;
-import com.fraga.bdmg.model.BemImovel;
-import com.fraga.bdmg.model.PessoaFisica;
-import com.fraga.bdmg.model.PessoaJuridica;
+import com.fraga.bdmg.data.model.BemImovel;
+import com.fraga.bdmg.data.model.PessoaFisica;
+import com.fraga.bdmg.data.model.PessoaJuridica;
 
 public class PessoaFisicaController  extends ControllerBasico<PessoaFisica>{
 
@@ -51,8 +51,6 @@ public class PessoaFisicaController  extends ControllerBasico<PessoaFisica>{
 		} else {
 			try {
 				PessoaFisica nova = view.formIntputAlterar(pessoaFisica);
-				System.out.println("apos o inut no controller");
-				nova.printPessoaFisica();
 				if (entityValidation(nova)) {
 					nova.setBensImoveis(alterarBensImoveis(pessoaFisica.getBensImoveis()));
 					insereNaLista(idSelecionado, nova);

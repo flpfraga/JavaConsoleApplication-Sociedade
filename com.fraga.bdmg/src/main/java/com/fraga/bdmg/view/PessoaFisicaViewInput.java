@@ -8,7 +8,7 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 
 import com.fraga.bdmg.application.ViewInput;
-import com.fraga.bdmg.model.PessoaFisica;
+import com.fraga.bdmg.data.model.PessoaFisica;
 
 public class PessoaFisicaViewInput implements ViewInput<PessoaFisica> {
 

@@ -2,7 +2,7 @@ package com.fraga.bdmg.application;
 
 import java.util.List;
 
-import com.fraga.bdmg.model.Pessoa;
+import com.fraga.bdmg.data.model.Pessoa;
 import com.fraga.bdmg.view.EstruturaSocietariaView;
 
 public interface View<D> {
@@ -12,8 +12,6 @@ public interface View<D> {
 	}
 		
 	void listarTodos(List<D> lista);
-	
-	Long selecionar(List<D> lista);
 	
 	void menu();
 	

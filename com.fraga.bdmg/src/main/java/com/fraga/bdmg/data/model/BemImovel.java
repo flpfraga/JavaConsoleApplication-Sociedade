@@ -1,6 +1,7 @@
-package com.fraga.bdmg.model;
+package com.fraga.bdmg.data.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
@@ -43,6 +44,23 @@ public class BemImovel implements Serializable{
 		System.out.println("Nome:  " + this.nome);
 		System.out.println("Valor: " + this.valor);
 		System.out.println();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		BemImovel other = (BemImovel) obj;
+		return Objects.equals(id, other.id) && Objects.equals(nome, other.nome) && Objects.equals(valor, other.valor);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(nome, valor);
 	}
 
 	

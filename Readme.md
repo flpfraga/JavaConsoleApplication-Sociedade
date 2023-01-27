@@ -11,6 +11,8 @@ Requisitos do negócio:
 • Pode haver ciclo societário, ou seja, a empresa A pode ser sócia da empresa B e a empresa B pode vir a ser sócia da empresa A. Inclusive, a empresa A pode vir a ser sócia dela mesma. Além disso, qualquer pessoa física ou jurídica pode ser sócia de mais de uma empresa.
 • A contabilização dos bens imóveis de uma pessoa (física ou jurídica) só deve ocorrer uma única vez.
 
+O método que calcula o comprometimento finananceiro de uma empresa está na classe PessoaJuridicaController, linha 200.
+
 Foi utilizado:
 Java 17
 Maven

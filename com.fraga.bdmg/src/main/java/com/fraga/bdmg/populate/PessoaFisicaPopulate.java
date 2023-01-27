@@ -3,8 +3,8 @@ package com.fraga.bdmg.populate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fraga.bdmg.model.BemImovel;
-import com.fraga.bdmg.model.PessoaFisica;
+import com.fraga.bdmg.data.model.BemImovel;
+import com.fraga.bdmg.data.model.PessoaFisica;
 
 public class PessoaFisicaPopulate {
 

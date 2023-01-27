@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.fraga.bdmg.application.ViewInput;
-import com.fraga.bdmg.model.BemImovel;
-import com.fraga.bdmg.model.Pessoa;
-import com.fraga.bdmg.model.PessoaFisica;
-import com.fraga.bdmg.model.PessoaJuridica;
+import com.fraga.bdmg.data.model.BemImovel;
+import com.fraga.bdmg.data.model.EstruturaSocietaria;
+import com.fraga.bdmg.data.model.PessoaFisica;
+import com.fraga.bdmg.data.model.PessoaJuridica;
 
 public class PessoaJuridicaController extends ControllerBasico<PessoaJuridica> {
 
@@ -62,7 +62,7 @@ public class PessoaJuridicaController extends ControllerBasico<PessoaJuridica> {
 				}
 			} catch (IOException e) {
 				view.ioExceptionMsg("Entrada de dados invalida." + e);
-			} catch(InputMismatchException e){
+			} catch (InputMismatchException e) {
 				view.ioExceptionMsg("Entrada de dados invalida." + e);
 			}
 
@@ -72,44 +72,61 @@ public class PessoaJuridicaController extends ControllerBasico<PessoaJuridica> {
 	@Override
 	public void cadastrar() {
 		try {
-			PessoaJuridica pf = view.formIntput();
-			if (entityValidation(pf)) {
-				pf.setId(contId++);
-				pf.setBensImoveis(adicionarBensImoveis(pf.getBensImoveis()));
-				pf.setEstruturaSocietaria(adicionarSocios(pf));
-				lista.add(pf);
-				view.alertaMsg("Cadastro realizado com sucesso.");
+			PessoaJuridica pessoaJuridica = view.formIntput();
+			pessoaJuridica.setId(contId++);
+			
+			if (entityValidation(pessoaJuridica)) {
+				pessoaJuridica.setBensImoveis(adicionarBensImoveis(new ArrayList<BemImovel>()));
+				EstruturaSocietaria estruturaSocietaria = (adicionarSocios(pessoaJuridica));
+				String estruturaSocietariaValida = estruturaSocietaria.isValid();
+				if (estruturaSocietariaValida.contentEquals("")) {
+					pessoaJuridica.setEstruturaSocietaria(estruturaSocietaria);
+					this.lista.add(pessoaJuridica);
+					this.view.alertaMsg("Cadastro realizado com sucesso.");
+				} else {
+					this.view.alertaMsg(estruturaSocietariaValida);
+					this.view.alertaMsg("Nao foi possivel realizar o cadastro. Tente novamente.");
+				}
+
 			} else {
-				view.alertaMsg("Nao foi possivel realizar o cadastro. Tente novamente.");
+
+				this.view.alertaMsg("Nao foi possivel realizar o cadastro. Tente novamente.");
 			}
 		} catch (IOException e) {
-			view.ioExceptionMsg("Entrada de dados invalida." + e);
+			this.view.ioExceptionMsg("Entrada de dados invalida." + e);
 		}
 	}
 
 	@Override
 	public void alterar() {
-		Long idSelecionado = view.selecionar(lista);
+		Long idSelecionado = this.view.selecionar(lista);
 		PessoaJuridica pessoaJuridica = idEstaNaLista(idSelecionado);
 		if (pessoaJuridica == null) {
-			view.alertaMsg("O id informado não tem correspondencia com pessoas cadastradas.");
+			this.view.alertaMsg("O id informado não tem correspondencia com pessoas cadastradas.");
 		} else {
 			try {
 				PessoaJuridica nova = view.formIntputAlterar(pessoaJuridica);
 				if (entityValidation(nova)) {
 					nova.setBensImoveis(alterarBensImoveis(pessoaJuridica.getBensImoveis()));
-					nova.setEstruturaSocietaria(alterarSocios(pessoaJuridica));
-					insereNaLista(idSelecionado, nova);
-					view.alertaMsg("Cadastro realizado com sucesso.");
+					EstruturaSocietaria estruturaSocietaria = (alterarSocios(pessoaJuridica));
+					String estruturaSocietariaValida = estruturaSocietaria.isValid();
+					if (estruturaSocietariaValida.contentEquals("")) {
+						nova.setEstruturaSocietaria(estruturaSocietaria);
+						insereNaLista(idSelecionado, nova);
+						this.view.alertaMsg("Cadastro realizado com sucesso.");
+					} else {
+						this.view.alertaMsg(estruturaSocietariaValida);
+						this.view.alertaMsg("Nao foi possivel realizar a alteracao. Tente novamente.");
+					}
 				} else {
-					view.alertaMsg("Nao foi possivel realizar o cadastro. Tente novamente.");
+					this.view.alertaMsg("Nao foi possivel realizar o cadastro. Tente novamente.");
 				}
 			} catch (IOException e) {
-				view.ioExceptionMsg("Entrada de dados invalida." + e);
+				this.view.ioExceptionMsg("Entrada de dados invalida." + e);
 			}
 		}
 	}
-
+	
 	private List<BemImovel> adicionarBensImoveis(List<BemImovel> bensImoveis) {
 		BemImovelController biController = mainController.getBiController();
 		biController.setLista(bensImoveis);
@@ -137,87 +154,88 @@ public class PessoaJuridicaController extends ControllerBasico<PessoaJuridica> {
 			view.alertaMsg("O id informado não tem correspondencia com pessoas cadastradas.");
 		} else {
 			lista.remove(pessoaJuridica);
+			removerEmpresaDeletadaDeSociedades(pessoaJuridica);
 			view.alertaMsg("Deletado.");
 		}
 	}
-	
+
 	public void removerEmpresaDeletadaDeSociedades(PessoaJuridica pessoaJuridica) {
-		for (PessoaJuridica pj : lista) {
-			List<Pessoa> socios = pj.getEstruturaSocietaria();
-			for (Pessoa p : socios) {
-				if (p.getId()==pessoaJuridica.getId()) {
-					socios.remove(p);
-				}
-			}
-		}
-	}
-	public void removerPessoasDeletadaDeSociedades(PessoaFisica pessoaFisica) {
-		for (PessoaJuridica pj : lista) {
-			List<Pessoa> socios = pj.getEstruturaSocietaria();
-			for (Pessoa p : socios) {
-				if (p.getId()==pessoaFisica.getId()) {
-					socios.remove(p);
-				}
-			}
+		for (PessoaJuridica pjs : this.lista) {
+			List<PessoaJuridica> listaPessoasJuridicas = pjs.getEstruturaSocietaria().getSociosJuridicos();
+			listaPessoasJuridicas.remove(pessoaJuridica);
 		}
 	}
 
+	public void removerPessoasDeletadaDeSociedades(PessoaFisica pessoaFisica) {
+		for (PessoaJuridica pjs : this.lista) {
+			List<PessoaFisica> listaPessoasFisicas = pjs.getEstruturaSocietaria().getSociosFisicos();
+			listaPessoasFisicas.remove(pessoaFisica);
+		}
+	}
+
+	////////////////////////////////////////////////Métodos para calculo do comprometimento financeiro\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+	
+	//Método que é chamado após escolha no Menu. Verifica se a empresa tem auto-socieade e, se sim, caucula seus bens.
 	public void comprometimentoFinanceiro() {
 		Long idSelecionado = view.selecionar(lista);
 		PessoaJuridica pessoaJuridica = idEstaNaLista(idSelecionado);
 		if (pessoaJuridica == null) {
 			view.alertaMsg("O id informado não tem correspondencia com pessoas cadastradas.");
 		} else {
-
+			EstruturaSocietaria estruturaSocietaria = pessoaJuridica.getEstruturaSocietaria();
+			Double indiceComprometimento = 0.0;
+			if(!estruturaSocietaria.getAutoSociedade()) {
+				indiceComprometimento = pessoaJuridica.getBensImoveis().stream().mapToDouble(b -> b.getValor()).sum();
+			}
+			indiceComprometimento += comprometimentoFinanceiro(estruturaSocietaria);
+			view.alertaMsg("");
+			view.alertaMsg("Indice de comprometimento financeiro para empresa " + pessoaJuridica.getNome() + ": "
+					+ indiceComprometimento);
+			view.alertaMsg("");
 		}
-		Map<String, BemImovel> bensImoveisSociedade = criaMapComBensImoveis(pessoaJuridica);
-
-		Double indiceComprometimento = calculaIndiceComprometimentoFinanceiro(bensImoveisSociedade);
-		view.alertaMsg("");
-		view.alertaMsg("Indice de comprometimento financeiro para empresa " + pessoaJuridica.getNome() + " e "
-				+ indiceComprometimento);
-		view.alertaMsg("");
 	}
 
-	public Map<String, BemImovel> criaMapComBensImoveis(PessoaJuridica pessoaJuridica) {
-		Map<String, BemImovel> bensImoveisSociedade = new HashMap<>();
-		pessoaJuridica.getBensImoveis().forEach(b -> bensImoveisSociedade.put(b.hashCode() + "", b));
-		pessoaJuridica.getEstruturaSocietaria()
-				.forEach(e -> e.getBensImoveis().forEach(b -> bensImoveisSociedade.put(b.hashCode() + "", b)));
+	//Método que percorre a estrutura societária de uma empresa e adiciona seus bens num Hash Map para não haver duplicação de itens.
+	//Retorna um Double com valor do comprometimento financeiro da empresa
+	public Double comprometimentoFinanceiro(EstruturaSocietaria estruturaSocietaria) {
 
-		return bensImoveisSociedade;
-	}
+		Map<Integer, BemImovel> bensImoveisSociedade = new HashMap<>();
 
-	public Double calculaIndiceComprometimentoFinanceiro(Map<String, BemImovel> bensImoveisSociedade) {
-		Iterator<Map.Entry<String, BemImovel>> iterator = bensImoveisSociedade.entrySet().iterator();
+		estruturaSocietaria.getSociosFisicos()
+				.forEach(f -> f.getBensImoveis().forEach(b -> bensImoveisSociedade.put(b.hashCode(), b)));
+		estruturaSocietaria.getSociosJuridicos()
+				.forEach(f -> f.getBensImoveis().forEach(b -> bensImoveisSociedade.put(b.hashCode(), b)));
+
+		Iterator<Map.Entry<Integer, BemImovel>> iterator = bensImoveisSociedade.entrySet().iterator();
 		Double indiceComprometimento = 0.0;
 		while (iterator.hasNext()) {
-			Map.Entry<String, BemImovel> entry = iterator.next();
+			Map.Entry<Integer, BemImovel> entry = iterator.next();
 			indiceComprometimento += entry.getValue().getValor();
 		}
 		return indiceComprometimento;
 	}
 
-	public List<Pessoa> adicionarSocios(PessoaJuridica pessoaJuridica) {
+	public EstruturaSocietaria adicionarSocios(PessoaJuridica pessoaJuridica) {
+
 		EstruturaSocietariaController socioController = new EstruturaSocietariaController();
-		socioController.setPfs(mainController.getPfController().getLista());
-		socioController.setPjs(mainController.getPjController().getLista());
-		socioController.setLista(pessoaJuridica.getEstruturaSocietaria());
+		socioController.setPessoasFisicas(this.mainController.getPfController().getLista());
+		socioController.setPessoasJuridicas(this.mainController.getPjController().getLista());
+		socioController.setEstruturaSocietaria(new EstruturaSocietaria());
 		socioController.setPessoaJuridica(pessoaJuridica);
 		socioController.adicionar();
-		return socioController.getLista();
+		EstruturaSocietaria estruturaSocietaria = socioController.getEstruturaSocietaria();
+		return estruturaSocietaria;
 	}
 
-	public List<Pessoa> alterarSocios(PessoaJuridica pessoaJuridica) {
+	public EstruturaSocietaria alterarSocios(PessoaJuridica pessoaJuridica) {
 		EstruturaSocietariaController socioController = new EstruturaSocietariaController();
-		socioController.setPfs(mainController.getPfController().getLista());
-		;
-		socioController.setPjs(mainController.getPjController().getLista());
-		;
-		socioController.setLista(pessoaJuridica.getEstruturaSocietaria());
+		socioController.setPessoasFisicas(this.mainController.getPfController().getLista());
+		socioController.setPessoasJuridicas(this.mainController.getPjController().getLista());
+		socioController.setEstruturaSocietaria(pessoaJuridica.getEstruturaSocietaria());
 		socioController.setPessoaJuridica(pessoaJuridica);
 		socioController.alterarSocios();
-		return socioController.getLista();
+		EstruturaSocietaria estruturaSocietaria = socioController.getEstruturaSocietaria();
+		return estruturaSocietaria;
 	}
 
 	public Long getContId() {
@@ -229,7 +247,7 @@ public class PessoaJuridicaController extends ControllerBasico<PessoaJuridica> {
 	}
 
 	public PessoaJuridica idEstaNaLista(Long id) {
-		for (PessoaJuridica p : lista) {
+		for (PessoaJuridica p : this.lista) {
 			if (p.getId() == id) {
 				return p;
 			}
@@ -238,7 +256,7 @@ public class PessoaJuridicaController extends ControllerBasico<PessoaJuridica> {
 	}
 
 	public void insereNaLista(Long id, PessoaJuridica pessoaJuridica) {
-		for (PessoaJuridica p : lista) {
+		for (PessoaJuridica p : this.lista) {
 			if (p.getId() == id) {
 				p.setNome(pessoaJuridica.getNome());
 				p.setCnpj(pessoaJuridica.getCnpj());

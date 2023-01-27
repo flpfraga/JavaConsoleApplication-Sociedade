@@ -6,8 +6,8 @@ import java.util.Optional;
 import java.util.Scanner;
 
 import com.fraga.bdmg.application.ViewInput;
-import com.fraga.bdmg.model.BemImovel;
-import com.fraga.bdmg.model.PessoaFisica;
+import com.fraga.bdmg.data.model.BemImovel;
+import com.fraga.bdmg.data.model.PessoaFisica;
 
 public class BemImovelController extends ControllerBasico<BemImovel> {
 
@@ -144,4 +144,6 @@ public class BemImovelController extends ControllerBasico<BemImovel> {
 			}
 		}
 	}
+	
+	
 }

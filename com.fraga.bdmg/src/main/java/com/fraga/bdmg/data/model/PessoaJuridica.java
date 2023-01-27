@@ -1,14 +1,10 @@
-package com.fraga.bdmg.model;
+package com.fraga.bdmg.data.model;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.validation.constraints.Null;
 
 import org.hibernate.validator.constraints.br.CNPJ;
 
 import lombok.Data;
-import lombok.experimental.FieldNameConstants.Exclude;
 
 @Data
 public class PessoaJuridica extends Pessoa{
@@ -18,15 +14,15 @@ public class PessoaJuridica extends Pessoa{
 	@CNPJ(message=("CNPJ invalido. Digit 14 numeros sem pontos, espacos ou tracos."))
 	private String cnpj;
 	
-	private List<Pessoa> estruturaSocietaria;
+	private EstruturaSocietaria estruturaSocietaria;
 	
 	public PessoaJuridica() {
 		super();
-		estruturaSocietaria = new ArrayList<>();
+		
 	}
 
 	public PessoaJuridica(String nome, List<BemImovel> bensImoveis, String cnpj,
-			List<Pessoa> estruturaSocietaria) {
+			EstruturaSocietaria estruturaSocietaria) {
 		super(nome, bensImoveis);
 		this.cnpj = cnpj;
 		this.estruturaSocietaria = estruturaSocietaria;
@@ -39,7 +35,7 @@ public class PessoaJuridica extends Pessoa{
 		System.out.println("Bens e Imoveis de " + this.getNome());
 		printBensImoveis();
 		System.out.println("Socios de " + this.getNome());
-		estruturaSocietaria.forEach(e -> e.print());
+		estruturaSocietaria.print();
 		System.out.println();
 	}
 	
@@ -48,7 +44,5 @@ public class PessoaJuridica extends Pessoa{
 		System.out.println("CNPJ "+ this.cnpj);
 	}
 	
-	public void addSocio(Pessoa pessoa) {
-		estruturaSocietaria.add(pessoa);
-	}
+	
 }
